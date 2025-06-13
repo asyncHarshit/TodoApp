@@ -3,45 +3,50 @@ import { LoginForm } from "@/components/login-form"
 import axios from "axios"
 import { toast } from "sonner"
 import { useNavigate } from "react-router-dom"
+
 const Auth = () => {
   const [mode, setMode] = useState("login") // "login" or "register"
-  const navigate = useNavigate();
+  const navigate = useNavigate()
 
-  // Register API call
+  // ✅ Register User
   async function getApiRegisterData(formData) {
     try {
       const response = await axios.post(
         "http://localhost:3000/api/auth/register",
         formData
       )
-      console.log("Registration Success:", response.data)
+
+      console.log(response)
+
       toast.success("Account created successfully!")
-      navigate('/task/list')
-    
       
-      toast
+      // Optional: auto-login or navigate after registration
+      navigate('/task/list')
     } catch (error) {
-      console.error("Registration failed:", error.response?.data || error.message)
-      toast.error(error.response?.data?.message || "Registration failed.")
+      console.error("Registration failed:", error)
+      toast.error(error?.response?.data?.message || "Registration failed.")
     }
   }
 
-  // Login API (placeholder for now)
+  // ✅ Login User
   async function getApiLoginData(formData) {
     try {
       const response = await axios.post(
         "http://localhost:3000/api/auth/login",
         formData
       )
-      console.log("Login Success:", response.data)
+
+      console.log(response?.data)
+
       toast.success("Logged in successfully!")
       navigate('/task/list')
     } catch (error) {
-      console.error("Login failed:", error.response?.data || error.message)
-      toast.error(error.response?.data?.message || "Login failed.")
+      console.error("Login failed:", error)
+      toast.error(error?.response?.data?.message || "Login failed.")
     }
   }
 
+  // ✅ Handle form submit from LoginForm
   const handleSubmit = (formData) => {
     if (mode === "login") {
       getApiLoginData(formData)
