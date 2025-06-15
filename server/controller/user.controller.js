@@ -107,14 +107,7 @@ const loginUser = async(req,res)=>{
             email : user.email
             
         })
-
         next();
-    
-
-
-
-
-        
     } catch (error) {
         res.status(500).json({
             message : "Error in login User in user controller"
@@ -125,7 +118,22 @@ const loginUser = async(req,res)=>{
 
 }
 
+const logoutUser = async (req,res)=>{
+
+    res.cookie("token" , "", {
+        withCredentials : true,
+        httpOnly : false
+    })
+
+
+    res.json({
+        success : true,
+        message : "Logout Successfully !!"
+
+    })
+
+}
 
 
 
-export {registerUser,loginUser};
+export {registerUser,loginUser,logoutUser};

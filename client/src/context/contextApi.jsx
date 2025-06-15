@@ -14,7 +14,7 @@ function TaskManagerProvider({ children }) {
       const data = await getUserAuthApi();
 
       if (data?.userInfo) {
-        setUser(data.userInfo);
+        setUser(data.userInfo); 
       }
 
       return data?.success ? navigate("/task/list") : navigate("/auth");
