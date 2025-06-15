@@ -13,7 +13,8 @@ const Auth = () => {
     try {
       const response = await axios.post(
         "http://localhost:3000/api/auth/register",
-        formData
+        formData,
+        {withCredentials : true}
       )
 
       console.log(response)
@@ -35,7 +36,8 @@ const Auth = () => {
     try {
       const response = await axios.post(
         "http://localhost:3000/api/auth/login",
-        formData
+        formData,
+        {withCredentials : true}
       )
 
       console.log(response?.data)
@@ -48,7 +50,8 @@ const Auth = () => {
     }
   }
 
-  // ✅ Handle form submit from LoginForm
+
+
   const handleSubmit = (formData) => {
     if (mode === "login") {
       getApiLoginData(formData)

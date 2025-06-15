@@ -4,7 +4,16 @@ import bcrypt from 'bcryptjs'
 
 //  register a user
 
-const registerUser = async(req,res)=>{
+const generateToken = (getId)=>{
+    return jwt.sign({getId},process.env.JWT_SECRET_KEY,{
+        expiresIn : 3 * 24 * 60 * 60
+    })
+
+}
+
+
+
+const registerUser = async(req,res,next)=>{
     try {
         const {name , email , password} = req.body;
 
@@ -28,9 +37,23 @@ const registerUser = async(req,res)=>{
         await newUser.save();
 
         if(newUser){
-            res.status(201).json({
-                message : "User Created successfully !! "
+            const token = generateToken(newUser?._id);
+
+            res.cookie('token',token,{
+                withCredentials : true,
+                httpOnly : false
             })
+        }
+
+        if(newUser){
+            res.status(201).json({
+                message : "User Created successfully !! ",
+                neme : newUser.name,
+                email : newUser.email,
+                id : newUser?._id
+            })
+
+            next()
         
         }else{
             res.status(400).json({
@@ -72,22 +95,21 @@ const loginUser = async(req,res)=>{
 
         }
 
-        // creating JWT token
-
-        const accessToken  = jwt.sign({
-            email : user.email,
-            userId : user._id
-        },
-        process.env.JWT_SECRET_KEY,
-        {
-            expiresIn: "1000m"
+        const token = generateToken(user?._id);
+        res.cookie('token',token,{
+                withCredentials : true,
+                httpOnly : false
         })
 
         res.json({
             message : "Logged in sucessfully",
-            success : true,
-            accessToken
+            name : user.name,
+            email : user.email
+            
         })
+
+        next();
+    
 
 
 
