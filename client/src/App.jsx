@@ -3,7 +3,7 @@ import { Route, Routes } from 'react-router-dom'
 import Auth from './pages/Auth'
 import CommonUI from './components/ui/CommonUI'
 import ScrumBoard from './pages/ScrumBoard'
-import AddTask from './pages/AddTask'
+import AddTask from './pages/Task'
 import Home from './pages/Home'
 
 const App = () => {

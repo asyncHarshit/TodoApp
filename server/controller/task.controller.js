@@ -33,12 +33,13 @@ const addNewTask = async(req,res)=>{
 const getAllTasks = async(req,res)=>{
     try {
         const {id} = req.params;
-        const extractAllTask = await Task.findById({userId : id})
+        const extractAllTask = await Task.find({userId : id})
 
         if(extractAllTask){
             return res.status(201).json({
                 success : true,
-                message : "All tasks shown"
+                message : "All tasks shown",
+                data : extractAllTask
             })
         }
 
