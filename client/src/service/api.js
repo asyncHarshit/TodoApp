@@ -3,7 +3,7 @@ import axios from "axios";
 
 export async function getUserAuthApi(){
     try {
-      const response = await axios.post('https://todo-app-backend-one-livid.vercel.app/api/auth/apiAuth',{},{withCredentials:true});
+      const response = await axios.post('https://todoapp-backend-rzzr.onrender.com/api/auth/apiAuth',{},{withCredentials:true});
 
       return response?.data
       
@@ -18,7 +18,7 @@ export async function getUserAuthApi(){
 
 export async function callLogoutApi(req,res){
   try {
-    const response = await axios.post('https://todo-app-backend-one-livid.vercel.app/api/auth/logout',{},{withCredentials : true})
+    const response = await axios.post('https://todoapp-backend-rzzr.onrender.com/api/auth/logout',{},{withCredentials : true})
   return response?.data;
     
   } catch (error) {
@@ -33,7 +33,7 @@ export async function callLogoutApi(req,res){
 
 export async function addNewTaskApi(formData){
   try {
-      const response = await axios.post('https://todo-app-backend-one-livid.vercel.app/api/task/add',
+      const response = await axios.post('https://todoapp-backend-rzzr.onrender.com/api/task/add',
         formData
       );
 
@@ -49,14 +49,14 @@ export async function addNewTaskApi(formData){
 
 }
 export async function getAllTasksApi(getUserId){
-  const response = await axios.get(`https://todo-app-backend-one-livid.vercel.app/api/task/getTasks/${getUserId}`);
+  const response = await axios.get(`https://todoapp-backend-rzzr.onrender.com/api/task/getTasks/${getUserId}`);
 
   return response.data;
 
 
 }
 export async function updateTaskApi(formData){
-  const response = await axios.put(`https://todo-app-backend-one-livid.vercel.app/api/task/update`, formData);
+  const response = await axios.put(`https://todoapp-backend-rzzr.onrender.com/api/task/update`, formData);
 
 
   return response?.data;
@@ -65,7 +65,7 @@ export async function updateTaskApi(formData){
 
 }
 export async function deleteTaskApi(getTaskId){
-  const response = await axios.delete(`https://todo-app-backend-one-livid.vercel.app/api/task/deleteTask/${getTaskId}`);
+  const response = await axios.delete(`https://todoapp-backend-rzzr.onrender.com/api/task/deleteTask/${getTaskId}`);
 
   return response.data;
 
