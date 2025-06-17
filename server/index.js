@@ -12,11 +12,22 @@ const app = express();
 
 app.use(
     cors({
-        origin : ["https://todo-app-client-alpha-gray.vercel.app"],
-        methods : ['GET' , 'POST','DELETE','PUT'],
-        credentials : true
+        origin: "https://todo-app-client-alpha-gray.vercel.app",
+        methods: ['GET', 'POST', 'DELETE', 'PUT'],
+        credentials: true,
+        allowedHeaders: ['Content-Type', 'Authorization'],
+        optionsSuccessStatus: 200
     })
-)
+);
+
+// Handle preflight requests
+app.options('*', cors({
+    origin: "https://todo-app-client-alpha-gray.vercel.app",
+    methods: ['GET', 'POST', 'DELETE', 'PUT'],
+    credentials: true,
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    optionsSuccessStatus: 200
+}));
 
 app.use(cookieParser());
 app.use(express.json());
