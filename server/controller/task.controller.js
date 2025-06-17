@@ -54,18 +54,70 @@ const getAllTasks = async(req,res)=>{
 }
 const updateTask = async(req,res)=>{
     try {
-        
+        const {title , description , userId , status , priority,_id} = req.body;
+        const updateTask = await Task.findByIdAndUpdate(_id,{
+            title,
+            description,
+            userId,
+            status,
+            priority
+        },{new : true})
+        if(updateTask){
+            return res.status(200).json({
+                success : true,
+                message : "Task Updated successfully",
+                data : updateTask
+            })
 
-        
+        }else{
+            return res.status(201).json({
+                success : false,
+                message : "Error inn update Task",
+                data : updateTask
+            })
+
+        }
+
     } catch (error) {
+        return res.status(201).json({
+                success : true,
+                message : "All tasks shown",
+                data : extractAllTask
+            })
         
     }
 }
 const deleteTask = async(req,res)=>{
     try {
+        const {id} = req.params;
+        if(!id){
+            return res.status(400).json({
+                success : false,
+                message : "Tast id is required !!"
+            })
+        }
+        const taskToBeDelete = await Task.findOneAndDelete(id);
+        if(taskToBeDelete){
+           return res.status(201).json({
+                success : true,
+                message : "Task deleted successfully !!"
+            })
+        }else{
+            return res.status(400).json({
+                success : false,
+                message : "Not able to delete Task!!"
+            })
+
+        }
+
 
         
     } catch (error) {
+        return res.status(201).json({
+                success : true,
+                message : "All tasks shown",
+                data : extractAllTask
+            })
         
     }
 }
@@ -74,7 +126,7 @@ const deleteTask = async(req,res)=>{
 
 
 
-export {addNewTask,getAllTasks}
+export {addNewTask,getAllTasks , deleteTask , updateTask}
 
 
 

@@ -56,8 +56,17 @@ export async function getAllTasksApi(getUserId){
 
 }
 export async function updateTaskApi(formData){
+  const response = await axios.put(`http://localhost:3000/api/task/update`, formData);
+
+
+  return response?.data;
+
+  
 
 }
-export async function deleteTaskApi(formData){
+export async function deleteTaskApi(getTaskId){
+  const response = await axios.delete(`http://localhost:3000/api/task/deleteTask/${getTaskId}`);
+
+  return response.data;
 
 }

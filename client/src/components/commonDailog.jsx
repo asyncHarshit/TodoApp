@@ -1,15 +1,11 @@
-import React, { useContext, useState } from 'react';
-import { X, Plus, Save } from 'lucide-react';
-import { addNewTaskApi } from '@/service/api';
+import React, { useContext, useState, useEffect } from 'react';
+import { X, Plus, Save, Edit } from 'lucide-react';
+import { addNewTaskApi, updateTaskApi } from '@/service/api'; // CHANGE: Added updateTaskApi import
 import { toast } from 'sonner';
 import { TaskManagerContext } from '@/context/contextApi';
 
-
-
-
-
-
-const TaskDialogForm = () => {
+// CHANGE: Added editTask and onTaskUpdated props
+const TaskDialogForm = ({ onTaskAdded, editTask = null, onTaskUpdated }) => {
   const [isOpen, setIsOpen] = useState(false);
   const {user} = useContext(TaskManagerContext)
   const [formData, setFormData] = useState({
@@ -19,6 +15,22 @@ const TaskDialogForm = () => {
     priority: 'medium'
   });
   const [errors, setErrors] = useState({});
+  
+  // CHANGE: Determine if we're in edit mode
+  const isEditMode = !!editTask;
+
+  // CHANGE: Effect to populate form when editing
+  useEffect(() => {
+    if (editTask) {
+      setFormData({
+        title: editTask.title || '',
+        description: editTask.description || '',
+        status: editTask.status || 'pending',
+        priority: editTask.priority || 'medium'
+      });
+      setIsOpen(true); // Open dialog when edit task is provided
+    }
+  }, [editTask]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -57,30 +69,50 @@ const TaskDialogForm = () => {
     e.preventDefault();
   
     if (validateForm()) {
-      // console.log(formData)
-      // console.log(user)
-      const response = await addNewTaskApi({
-        ...formData,
-        userId : user?._id
-      });
-      console.log(response)
-      if(response?.success){
-       toast.message("Task Added Successfully !! ❤️")
-      }else{
-         toast.error("some error occured")
-       }
+      try {
+        let response;
         
-      // Reset form and close dialog
-      setFormData({
-        title: '',
-        description: '',
-        status: 'pending',
-        priority: 'medium'
-      });
-      setIsOpen(false);
-      
-     
-      // toast.message("New Task Added !!")
+        // CHANGE: Handle both create and update operations
+        if (isEditMode) {
+          // Update existing task
+          response = await updateTaskApi({
+            ...formData,
+            _id: editTask._id, // CRITICAL: Include the task ID
+            userId: user?._id   // Include userId for backend validation
+          });
+          
+          if (response?.success) {
+            toast.message("Task Updated Successfully! ✨");
+            if (onTaskUpdated) {
+              onTaskUpdated(); // Refresh the task list
+            }
+          } else {
+            toast.error("Failed to update task");
+          }
+        } else {
+          // Create new task
+          response = await addNewTaskApi({
+            ...formData,
+            userId: user?._id
+          });
+          
+          if (response?.success) {
+            toast.message("Task Added Successfully! ❤️");
+            if (onTaskAdded) {
+              onTaskAdded(); // Refresh the task list
+            }
+          } else {
+            toast.error("Failed to create task");
+          }
+        }
+        
+        // Reset form and close dialog
+        handleClose();
+        
+      } catch (error) {
+        console.error("Error submitting task:", error);
+        toast.error("An error occurred while saving the task");
+      }
     }
   };
 
@@ -97,14 +129,16 @@ const TaskDialogForm = () => {
 
   return (
     <div>
-      {/* Trigger Button */}
-      <button
-        onClick={() => setIsOpen(true)}
-        className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
-      >
-        <Plus size={20} />
-        Create New Task
-      </button>
+      {/* CHANGE: Only show trigger button when not in edit mode */}
+      {!isEditMode && (
+        <button
+          onClick={() => setIsOpen(true)}
+          className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+        >
+          <Plus size={20} />
+          Create New Task
+        </button>
+      )}
 
       {/* Dialog Overlay */}
       {isOpen && (
@@ -113,7 +147,10 @@ const TaskDialogForm = () => {
           <div className="bg-white rounded-lg shadow-xl w-full max-w-md max-h-[90vh] overflow-y-auto">
             {/* Header */}
             <div className="flex items-center justify-between p-6 border-b">
-              <h2 className="text-xl font-semibold text-gray-900">Create New Task</h2>
+              {/* CHANGE: Dynamic title based on edit mode */}
+              <h2 className="text-xl font-semibold text-gray-900">
+                {isEditMode ? 'Update Task' : 'Create New Task'}
+              </h2>
               <button
                 onClick={handleClose}
                 className="text-gray-400 hover:text-gray-600 transition-colors"
@@ -224,8 +261,9 @@ const TaskDialogForm = () => {
                   onClick={handleSubmit}
                   className="flex-1 flex items-center justify-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors"
                 >
-                  <Save size={16} />
-                  Create Task
+                  {/* CHANGE: Dynamic icon and text based on edit mode */}
+                  {isEditMode ? <Edit size={16} /> : <Save size={16} />}
+                  {isEditMode ? 'Update Task' : 'Create Task'}
                 </button>
               </div>
             </div>
