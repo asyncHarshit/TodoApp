@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { TaskManagerContext } from '@/context/contextApi';
 import { deleteTaskApi } from '@/service/api';
 import { toast } from 'sonner';
@@ -15,16 +15,17 @@ import {
 
 const ScrumTaskCard = ({ task, onEditTask, onTaskUpdated }) => {
   const { user } = useContext(TaskManagerContext);
+ 
 
   const handleDragStart = (e) => {
     e.dataTransfer.setData('text/plain', task._id);
     e.dataTransfer.effectAllowed = 'move';
   };
 
-  const handleDelete = async () => {
-    if (window.confirm('Are you sure you want to delete this task?')) {
+  const handleDelete = async (getId) => {
+    // if (window.confirm('Are you sure you want to delete this task?')) {}
       try {
-        const response = await deleteTaskApi(task._id);
+        const response = await deleteTaskApi(getId);
         if (response?.success) {
           toast.message("Task deleted successfully! 🗑️");
           onTaskUpdated();
@@ -35,7 +36,7 @@ const ScrumTaskCard = ({ task, onEditTask, onTaskUpdated }) => {
         console.error("Error deleting task:", error);
         toast.error("Error deleting task");
       }
-    }
+    
   };
 
   const getPriorityIcon = (priority) => {
@@ -92,14 +93,15 @@ const ScrumTaskCard = ({ task, onEditTask, onTaskUpdated }) => {
         <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
           <button
             onClick={() => onEditTask(task)}
-            className="p-1.5 text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded transition-colors"
+            className="p-1.5 text-gray-500 hover:text-blue-600 cursor-pointer hover:bg-blue-50 rounded transition-colors"
             title="Edit task"
           >
             <Edit3 className="h-4 w-4" />
           </button>
           <button
-            onClick={handleDelete}
-            className="p-1.5 text-gray-500 hover:text-red-600 hover:bg-red-50 rounded transition-colors"
+            onClick={()=> handleDelete(task?._id)}
+            
+            className="p-1.5 text-gray-500 hover:text-red-600 cursor-pointer hover:bg-red-50 rounded transition-colors"
             title="Delete task"
           >
             <Trash2 className="h-4 w-4" />

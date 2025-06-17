@@ -5,7 +5,7 @@ import { toast } from 'sonner';
 import { TaskManagerContext } from '@/context/contextApi';
 
 // CHANGE: Added editTask and onTaskUpdated props
-const TaskDialogForm = ({ onTaskAdded, editTask = null, onTaskUpdated }) => {
+const TaskDialogForm = ({ onTaskAdded, editTask = null, onTaskUpdated , canShow}) => {
   const [isOpen, setIsOpen] = useState(false);
   const {user} = useContext(TaskManagerContext)
   const [formData, setFormData] = useState({
@@ -130,10 +130,10 @@ const TaskDialogForm = ({ onTaskAdded, editTask = null, onTaskUpdated }) => {
   return (
     <div>
       {/* CHANGE: Only show trigger button when not in edit mode */}
-      {!isEditMode && (
+      {!isEditMode && canShow && (
         <button
           onClick={() => setIsOpen(true)}
-          className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+          className="flex items-center gap-2 cursor-pointer bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
         >
           <Plus size={20} />
           Create New Task

@@ -9,6 +9,7 @@ import { LayoutDashboard} from 'lucide-react';
 const ScrumBoard = () => {
   const { loading, setloading, taskList, setTaskList, user } = useContext(TaskManagerContext);
   const [editTask, setEditTask] = useState(null);
+  const [canShow , setCanShow] = useState(false)
 
   useEffect(() => {
     if (!user?._id) return;
@@ -82,7 +83,7 @@ const ScrumBoard = () => {
   const columns = [
     {
       id: 'pending',
-      title: 'To Do',
+      title: 'Pending',
       status: 'pending',
       color: 'bg-red-50 border-red-200',
       headerColor: 'bg-red-100 text-red-800',
@@ -98,7 +99,7 @@ const ScrumBoard = () => {
     },
     {
       id: 'completed',
-      title: 'Done',
+      title: 'Completed',
       status: 'completed',
       color: 'bg-green-50 border-green-200',
       headerColor: 'bg-green-100 text-green-800',
@@ -149,6 +150,7 @@ const ScrumBoard = () => {
       {editTask && (
         <TaskDialogForm
           editTask={editTask}
+          canShow={canShow}
           onTaskUpdated={handleTaskUpdated}
         />
       )}

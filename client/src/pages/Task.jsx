@@ -39,15 +39,8 @@ const Task = () => {
 
   // If board view is selected, render ScrumBoard
   if (viewMode === 'board') {
-    return <ScrumBoard />;
-  }
-
-  // Otherwise render grid view
-  return (
-    <>
-      <div>
-        {/* View Toggle */}
-        <div className="flex items-center justify-between mb-6">
+    return <>
+    <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-2 bg-gray-100 rounded-lg p-1">
             <button
               onClick={() => setViewMode('grid')}
@@ -72,8 +65,52 @@ const Task = () => {
               Board View
             </button>
           </div>
-          <TaskDialogForm onTaskAdded={fetchListOfTasks} />
-        </div>
+          
+        
+        <TaskDialogForm canShow={true} onTaskAdded={fetchListOfTasks} />
+        
+       </div>
+       <div>
+        <ScrumBoard/>
+       </div>
+       </>
+  }
+
+  // Otherwise render grid view
+  return (
+    <>
+      <div>
+        {/* View Toggle */}
+       
+         <div className="flex items-center justify-between mb-6">
+          <div className="flex items-center gap-2 bg-gray-100 rounded-lg p-1">
+            <button
+              onClick={() => setViewMode('grid')}
+              className={`flex items-center gap-2 px-3 cursor-pointer py-2 rounded-md text-sm font-medium transition-colors ${
+                viewMode === 'grid'
+                  ? 'bg-white text-gray-900 shadow-sm cursor-pointer'
+                  : 'text-gray-600 hover:text-gray-900 cursor-pointer'
+              }`}
+            >
+              <LayoutGrid className="h-4 w-4" />
+              Grid View
+            </button>
+            <button
+              onClick={() => setViewMode('board')}
+              className={`flex items-center gap-2 px-3 cursor-pointer py-2 rounded-md text-sm font-medium transition-colors ${
+                viewMode === 'board'
+                  ? 'bg-white text-gray-900 shadow-sm cursor-pointer'
+                  : 'text-gray-600 hover:text-gray-900 cursor-pointer'
+              }`}
+            >
+              <Kanban className="h-4 w-4" />
+              Board View
+            </button>
+          </div>
+          
+        
+        <TaskDialogForm onTaskAdded={fetchListOfTasks} canShow={true}/>
+       </div>
 
         {/* Grid View */}
         <div className='mt-10 flex flex-col'>

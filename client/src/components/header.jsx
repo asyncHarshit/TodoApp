@@ -1,7 +1,7 @@
 import React, { useContext } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { LogOut } from 'lucide-react'
-import TaskManagerProvider, { TaskManagerContext } from '@/context/contextApi'
+import  { TaskManagerContext } from '@/context/contextApi'
 import { callLogoutApi } from '@/service/api'
 
 
@@ -25,7 +25,7 @@ const Header = () => {
           <div className="w-auto">
             <h1>Task Manager</h1>
           </div>
-          <div className="flex gap-4">
+          {/* <div className="flex gap-4">
             <Link className="text-black text-xl font-bold" to={"/task/list"}>
               Tasks
             </Link>
@@ -35,7 +35,7 @@ const Header = () => {
             >
               Scrum Board
             </Link>
-          </div>
+          </div> */}
           <div>
             <LogOut
               onClick={handleLogout}
