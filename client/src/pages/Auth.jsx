@@ -12,7 +12,7 @@ const Auth = () => {
   async function getApiRegisterData(formData) {
     try {
       const response = await axios.post(
-        "http://localhost:3000/api/auth/register",
+        "https://todo-app-backend-one-livid.vercel.app/api/auth/register",
         formData,
         {withCredentials : true}
       )
@@ -35,7 +35,7 @@ const Auth = () => {
   async function getApiLoginData(formData) {
     try {
       const response = await axios.post(
-        "http://localhost:3000/api/auth/login",
+        "https://todo-app-backend-one-livid.vercel.app/api/auth/login",
         formData,
         {withCredentials : true}
       )
