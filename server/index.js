@@ -10,21 +10,12 @@ dotenv.config();
 
 const app = express();
 
-// // ✅ Use CORS middleware before any routes
-// const allowedOrigins = ["https://todo-app-client-alpha-gray.vercel.app"];
-
-// app.use(cors({
-//   origin: function (origin, callback) {
-//     if (!origin || allowedOrigins.includes(origin)) {
-//       callback(null, true);
-//     } else {
-//       callback(new Error("Not allowed by CORS"));
-//     }
-//   },
-//   credentials: true,
-//   methods: ["GET", "POST", "PUT", "DELETE"],
-//   allowedHeaders: ["Content-Type", "Authorization"]
-// }));
+// ✅ Use CORS middleware before any routes
+app.use(cors({
+  origin: "*", // Allow all origins
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  allowedHeaders: ["Content-Type", "Authorization"]
+}));
 
 app.use(express.json());
 app.use(cookieParser());
@@ -35,8 +26,7 @@ connectDB();
 app.use("/api/auth", userRouter);
 app.use("/api/task", taskRouter);
 
-// ✅ Handle preflight requests globally
-// app.options("*", cors());
+
 
 app.listen(3000, () => {
   console.log("App is running on port 3000");
