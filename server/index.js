@@ -12,7 +12,7 @@ const app = express();
 
 app.use(
     cors({
-        origin : ["https://todo-app-backend-one-livid.vercel.app"],
+        origin : ["https://todo-app-client-alpha-gray.vercel.app"],
         methods : ['GET' , 'POST','DELETE','PUT'],
         credentials : true
     })
