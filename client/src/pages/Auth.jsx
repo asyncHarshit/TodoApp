@@ -7,12 +7,13 @@ import { useNavigate } from "react-router-dom"
 const Auth = () => {
   const [mode, setMode] = useState("login") // "login" or "register"
   const navigate = useNavigate()
+  const baseUrl = import.meta.env.VITE_API_URL;
 
   // ✅ Register User
   async function getApiRegisterData(formData) {
     try {
       const response = await axios.post(
-        "https://todoapp-backend-rzzr.onrender.com/api/auth/register",
+        `${baseUrl}/api/auth/register`,
         formData,
         {withCredentials : true}
       )
@@ -24,7 +25,7 @@ const Auth = () => {
       // Optional: auto-login or navigate after registration
       navigate('/task/list')
     } catch (error) {
-      console.error("Registration failed:", error)
+      console.error("Registration failed:", error.message)
       toast.error(error?.response?.data?.message || "Registration failed.")
     }
   }
@@ -35,7 +36,7 @@ const Auth = () => {
   async function getApiLoginData(formData) {
     try {
       const response = await axios.post(
-        "https://todoapp-backend-rzzr.onrender.com/api/auth/login",
+         `${baseUrl}/api/auth/login`,
         formData,
         {withCredentials : true}
       )

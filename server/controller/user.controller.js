@@ -1,139 +1,120 @@
 import User from "../model/User.js";
 import jwt from 'jsonwebtoken';
-import bcrypt from 'bcryptjs'
+import bcrypt from 'bcryptjs';
 
-//  register a user
+// ✅ Generate JWT Token
+const generateToken = (getId) => {
+  return jwt.sign({ getId }, process.env.JWT_SECRET_KEY, {
+    expiresIn: 3 * 24 * 60 * 60 // 3 days
+  });
+};
 
-const generateToken = (getId)=>{
-    return jwt.sign({getId},process.env.JWT_SECRET_KEY,{
-        expiresIn : 3 * 24 * 60 * 60
-    })
+// ✅ Register a User
+const registerUser = async (req, res) => {
+  try {
+    const { name, email, password } = req.body;
 
-}
-
-
-
-const registerUser = async(req,res,next)=>{
-    try {
-        const {name , email , password} = req.body;
-
-        // check existing user
-        const checkExistingUser = await User.findOne({email});
-        if(checkExistingUser){
-            res.status(401).json({
-                message : "user already exist",
-                success : false
-            })
-        }
-        const salt = await bcrypt.genSalt(10);
-        const hashedPassword = await bcrypt.hash(password , salt)
-
-        const newUser = new User({
-            name,
-            email,
-            password : hashedPassword,
-        })
-
-        await newUser.save();
-
-        if(newUser){
-            const token = generateToken(newUser?._id);
-
-            res.cookie('token',token,{
-                withCredentials : true,
-                httpOnly : false
-            })
-        }
-
-        if(newUser){
-            res.status(201).json({
-                message : "User Created successfully !! ",
-                neme : newUser.name,
-                email : newUser.email,
-                id : newUser?._id
-            })
-
-            next()
-        
-        }else{
-            res.status(400).json({
-                message : "Unable to register User",
-                success : true
-            })
-        }
-        
-    } catch (error) {
-        res.status(500).json({
-            message : "Error in register User in auth controller"
-        })
-        console.log(error);
-        
-        
+    // Check if user already exists
+    const checkExistingUser = await User.findOne({ email });
+    if (checkExistingUser) {
+      return res.status(401).json({
+        message: "User already exists",
+        success: false
+      });
     }
 
-}
+    // Hash the password
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
 
+    // Create new user
+    const newUser = new User({
+      name,
+      email,
+      password: hashedPassword,
+    });
 
-const loginUser = async(req,res)=>{
-    try {
-        const {email , password} = req.body;
-        const user = await User.findOne({email});
-        if(!user){
-            res.status(401).json({
-                message : "User not found",
-                success : false
-            })
-        }
+    await newUser.save();
 
-        const isPasswordMatch = await bcrypt.compare(password , user.password);
+    // Generate token and set cookie
+    const token = generateToken(newUser._id);
+    res.cookie('token', token, {
+      withCredentials: true,
+      httpOnly: false
+    });
 
-        if(!isPasswordMatch){
-            res.status(401).json({
-                message : "Wrong password !!",
-                success : false
-            })
+    // Send success response
+    return res.status(201).json({
+      message: "User created successfully!",
+      name: newUser.name,
+      email: newUser.email,
+      id: newUser._id
+    });
 
-        }
+  } catch (error) {
+    console.log("Register Error:", error);
+    return res.status(500).json({
+      message: "Error in registerUser"
+    });
+  }
+};
 
-        const token = generateToken(user?._id);
-        res.cookie('token',token,{
-                withCredentials : true,
-                httpOnly : false
-        })
+// ✅ Login a User
+const loginUser = async (req, res) => {
+  try {
+    const { email, password } = req.body;
 
-        res.json({
-            message : "Logged in sucessfully",
-            name : user.name,
-            email : user.email
-            
-        })
-        next();
-    } catch (error) {
-        res.status(500).json({
-            message : "Error in login User in user controller"
-        })
-        console.log(error);
-        
+    // Check user existence
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(401).json({
+        message: "User not found",
+        success: false
+      });
     }
 
-}
+    // Compare password
+    const isPasswordMatch = await bcrypt.compare(password, user.password);
+    if (!isPasswordMatch) {
+      return res.status(401).json({
+        message: "Wrong password!",
+        success: false
+      });
+    }
 
-const logoutUser = async (req,res)=>{
+    // Generate token and set cookie
+    const token = generateToken(user._id);
+    res.cookie('token', token, {
+      withCredentials: true,
+      httpOnly: false
+    });
 
-    res.cookie("token" , "", {
-        withCredentials : true,
-        httpOnly : false
-    })
+    // Send success response
+    return res.json({
+      message: "Logged in successfully",
+      name: user.name,
+      email: user.email
+    });
 
+  } catch (error) {
+    console.log("Login Error:", error);
+    return res.status(500).json({
+      message: "Error in loginUser"
+    });
+  }
+};
 
-    res.json({
-        success : true,
-        message : "Logout Successfully !!"
+// ✅ Logout a User
+const logoutUser = async (req, res) => {
+  res.cookie("token", "", {
+    withCredentials: true,
+    httpOnly: false
+  });
 
-    })
+  return res.json({
+    success: true,
+    message: "Logout successfully!"
+  });
+};
 
-}
-
-
-
-export {registerUser,loginUser,logoutUser};
+export { registerUser, loginUser, logoutUser };
