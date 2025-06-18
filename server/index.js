@@ -12,7 +12,7 @@ const app = express();
 
 app.use(
   cors({
-    origin: ["https://todo-app-client-omega-pied.vercel.app" , "http://localhost:5173"],
+    origin: ["https://todo-app-client-plum.vercel.app" , "http://localhost:5173"],
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
   })
