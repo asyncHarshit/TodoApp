@@ -6,6 +6,8 @@ const baseUrl = import.meta.env.VITE_API_URL;
 export async function getUserAuthApi(){
     try {
       const response = await axios.post(`${baseUrl}/api/auth/apiAuth`,{},{withCredentials:true});
+      console.log(response);
+      
 
       return response?.data
       
@@ -24,7 +26,7 @@ export async function callLogoutApi(req,res){
   return response?.data;
     
   } catch (error) {
-    console.log("error in api.js" , error.message);
+    console.log("error in logout api.js" , error.message);
     
   }
   

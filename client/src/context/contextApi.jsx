@@ -15,6 +15,7 @@ function TaskManagerProvider({ children }) {
   useEffect(() => {
     const verifuUserCookie = async () => {
       const data = await getUserAuthApi();
+      console.log(data)
 
       if (data?.userInfo) {
         setUser(data.userInfo); 

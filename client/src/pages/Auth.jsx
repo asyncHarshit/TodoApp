@@ -5,11 +5,11 @@ import { toast } from "sonner"
 import { useNavigate } from "react-router-dom"
 
 const Auth = () => {
-  const [mode, setMode] = useState("login") // "login" or "register"
+  const [mode, setMode] = useState("login")
   const navigate = useNavigate()
   const baseUrl = import.meta.env.VITE_API_URL;
 
-  // ✅ Register User
+
   async function getApiRegisterData(formData) {
     try {
       const response = await axios.post(
@@ -22,17 +22,13 @@ const Auth = () => {
 
       toast.success("Account created successfully!")
       
-      // Optional: auto-login or navigate after registration
       navigate('/task/list')
     } catch (error) {
-      console.error("Registration failed:", error.message)
+      console.error("Registration failed:", error.data)
       toast.error(error?.response?.data?.message || "Registration failed.")
     }
   }
 
-  // ✅ Login User
-
-  
   async function getApiLoginData(formData) {
     try {
       const response = await axios.post(
