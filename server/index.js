@@ -10,9 +10,16 @@ dotenv.config();
 
 const app = express();
 
+const allowedOrigins = ["https://todo-app-client-plum.vercel.app", "http://localhost:5173"];
 app.use(
   cors({
-    origin: ["https://todo-app-client-plum.vercel.app" , "http://localhost:5173"],
+    origin: function (origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
   })
